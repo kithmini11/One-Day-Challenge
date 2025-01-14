@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Builder - New Beginnings</title>
+    <link rel="stylesheet" href="HabitBuilder.css">
+    <script src="HabitBuilder.js" defer></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo">New Beginnings</div>
+            <div class="nav-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="#habits">Habits</a>
+                <a href="#statistics">Statistics</a>
+                <a href="#logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="habit-builder">
+        <section class="habit-header">
+            <h1>Habit Builder</h1>
+            <button id="addHabitBtn" class="primary-btn">Create New Habit</button>
+        </section>
+
+        <section class="habit-filters">
+            <div class="filter-group">
+                <label for="statusFilter">Status:</label>
+                <select id="statusFilter">
+                    <option value="all">All Habits</option>
+                    <option value="active">Active</option>
+                    <option value="paused">Paused</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="categoryFilter">Category:</label>
+                <select id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="health">Health</option>
+                    <option value="productivity">Productivity</option>
+                    <option value="mindfulness">Mindfulness</option>
+                    <option value="fitness">Fitness</option>
+                    <option value="learning">Learning</option>
+                </select>
+            </div>
+            <div class="search-group">
+                <input type="text" id="searchHabits" placeholder="Search habits...">
+            </div>
+        </section>
+
+        <section class="habits-container">
+            <div id="activeHabits" class="habits-grid">
+                <!-- Habits will be dynamically inserted here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal for adding/editing habits -->
+    <div id="habitModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modalTitle">Create New Habit</h2>
+            <form id="habitForm">
+                <div class="form-group">
+                    <label for="habitName">Habit Name:</label>
+                    <input type="text" id="habitName" required>
+                </div>
+                <div class="form-group">
+                    <label for="habitDescription">Description:</label>
+                    <textarea id="habitDescription" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="habitCategory">Category:</label>
+                    <select id="habitCategory" required>
+                        <option value="health">Health</option>
+                        <option value="productivity">Productivity</option>
+                        <option value="mindfulness">Mindfulness</option>
+                        <option value="fitness">Fitness</option>
+                        <option value="learning">Learning</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="habitFrequency">Frequency:</label>
+                    <select id="habitFrequency" required>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reminderTime">Reminder Time:</label>
+                    <input type="time" id="reminderTime">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="primary-btn">Save Habit</button>
+                    <button type="button" class="secondary-btn" id="cancelHabit">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>

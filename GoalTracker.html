@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goal Tracker - New Beginnings</title>
+    <link rel="stylesheet" href="GoalTracker.css">
+    <script src="GoalTracker.js" defer></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo">New Beginnings</div>
+            <div class="nav-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="#goals">Goals</a>
+                <a href="#completed">Completed</a>
+                <a href="#logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="goal-tracker">
+        <section class="goal-header">
+            <h1>Goal Tracker</h1>
+            <button id="addGoalBtn" class="primary-btn">Add New Goal</button>
+        </section>
+
+        <section class="goal-filters">
+            <div class="filter-group">
+                <label for="statusFilter">Status:</label>
+                <select id="statusFilter">
+                    <option value="all">All Goals</option>
+                    <option value="active">Active</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="categoryFilter">Category:</label>
+                <select id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="health">Health</option>
+                    <option value="career">Career</option>
+                    <option value="education">Education</option>
+                    <option value="personal">Personal</option>
+                    <option value="finance">Finance</option>
+                </select>
+            </div>
+            <div class="search-group">
+                <input type="text" id="searchGoals" placeholder="Search goals...">
+            </div>
+        </section>
+
+        <section class="goals-container">
+            <div id="activeGoals" class="goals-grid">
+                <!-- Goals will be dynamically inserted here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal for adding/editing goals -->
+    <div id="goalModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modalTitle">Add New Goal</h2>
+            <form id="goalForm">
+                <div class="form-group">
+                    <label for="goalTitle">Goal Title:</label>
+                    <input type="text" id="goalTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="goalDescription">Description:</label>
+                    <textarea id="goalDescription" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="goalCategory">Category:</label>
+                    <select id="goalCategory" required>
+                        <option value="health">Health</option>
+                        <option value="career">Career</option>
+                        <option value="education">Education</option>
+                        <option value="personal">Personal</option>
+                        <option value="finance">Finance</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="goalDueDate">Due Date:</label>
+                    <input type="date" id="goalDueDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="goalPriority">Priority:</label>
+                    <select id="goalPriority" required>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Milestones:</label>
+                    <div id="milestoneContainer">
+                        <!-- Milestones will be dynamically added here -->
+                    </div>
+                    <button type="button" id="addMilestoneBtn" class="secondary-btn">Add Milestone</button>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="primary-btn">Save Goal</button>
+                    <button type="button" class="secondary-btn" id="cancelGoal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>
