@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Journal - New Beginnings</title>
+    <link rel="stylesheet" href="ProgressJournal.css">
+    <script src="ProgressJournal.js" defer></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo"><img src="logo.png" alt="New Beginnings Logo" class="logo-img">New Beginnings</div>
+            <div class="nav-links">
+                <a href="dashboard.html">Dashboard</a>
+                <a href="GoalTracker.html">Goals</a>
+                <a href="HabitBuilder.html">Habits</a>
+                <a href="#logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+        <div class="journal-card">
+            <h2>Progress Journal</h2>
+            <form id="journalForm">
+                <div class="mood-selector">
+                    <div class="mood-option" data-mood="😊">😊 Great</div>
+                    <div class="mood-option" data-mood="😐">😐 Neutral</div>
+                    <div class="mood-option" data-mood="😔">😔 Challenging</div>
+                </div>
+                <textarea placeholder="Reflect on your progress today... What went well? What challenges did you face? What did you learn?"></textarea>
+                   <div class="entry-metrics">
+                    <div class="metric">
+                        <div class="metric-value">3/5</div>
+                        <div class="metric-label">Habits Completed</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">75%</div>
+                        <div class="metric-label">Daily Goal Progress</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">High</div>
+                        <div class="metric-label">Energy Level</div>
+                    </div>
+                </div>
+                <button type="submit" class="submit-button">Save Entry</button>
+            </form>
+        </div>
+    
+        <div class="journal-entry">
+            <div class="entry-header">
+                <span class="entry-date">January 14, 2025</span>
+                <span class="mood-indicator">😊</span>
+            </div>
+            <div class="entry-tags">
+                <span class="tag">productivity</span>
+                <span class="tag">goals</span>
+                <span class="tag">progress</span>
+            </div>
+            <div class="entry-content">
+                <p>Great progress today! Completed all my morning habits and made significant progress on my main project. The new approach to time blocking is really helping.</p>
+            </div>
+            <div class="entry-metrics">
+                <div class="metric">
+                    <div class="metric-value">5/5</div>
+                    <div class="metric-label">Habits Completed</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">90%</div>
+                    <div class="metric-label">Daily Goal Progress</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">High</div>
+                    <div class="metric-label">Energy Level</div>
+                </div>
+            </div>
+        </div>    
+</body>
+</html>

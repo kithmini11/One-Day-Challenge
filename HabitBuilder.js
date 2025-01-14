@@ -1,22 +1,22 @@
 // Habit data structure
 class Habit {
-    constructor(id, name, description, category, frequency, reminderTime) {
+    constructor(id, title, description, frequency, reminder, category, startDate) {
         this.id = id;
-        this.name = name;
+        this.title = title;
         this.description = description;
+        this.frequency = frequency; // daily, weekly, monthly
+        this.reminder = reminder;
         this.category = category;
-        this.frequency = frequency;
-        this.reminderTime = reminderTime;
-        this.status = 'active';
+        this.startDate = startDate;
         this.streak = 0;
-        this.longestStreak = 0;
-        this.completedDates = [];
+        this.completionHistory = [];
+        this.status = 'active';
         this.createdAt = new Date().toISOString();
     }
 }
 
-// Habit builder class
-class HabitBuilder {
+// Habit tracker class
+class HabitTracker {
     constructor() {
         this.habits = [];
         this.loadHabits();
@@ -60,18 +60,14 @@ class HabitBuilder {
         const form = document.getElementById('habitForm');
 
         if (habitId) {
+            // Edit existing habit
             const habit = this.habits.find(h => h.id === habitId);
-            form.elements['habitId'].value = habit.id;
-            form.elements['name'].value = habit.name;
-            form.elements['description'].value = habit.description;
-            form.elements['category'].value = habit.category;
-            form.elements['frequency'].value = habit.frequency;
-            form.elements['reminderTime'].value = habit.reminderTime;
             modalTitle.textContent = 'Edit Habit';
+            this.populateHabitForm(habit);
         } else {
-            form.reset();
-            form.elements['habitId'].value = '';
+            // Add new habit
             modalTitle.textContent = 'Add New Habit';
+            form.reset();
         }
 
         modal.style.display = 'block';
@@ -79,72 +75,140 @@ class HabitBuilder {
 
     // Close habit modal
     closeHabitModal() {
-        const modal = document.getElementById('habitModal');
-        modal.style.display = 'none';
+        document.getElementById('habitModal').style.display = 'none';
+        document.getElementById('habitForm').reset();
     }
 
     // Handle habit form submission
     handleHabitSubmit(e) {
         e.preventDefault();
-        const form = e.target;
-        const habitId = form.elements['habitId'].value;
-        const name = form.elements['name'].value;
-        const description = form.elements['description'].value;
-        const category = form.elements['category'].value;
-        const frequency = form.elements['frequency'].value;
-        const reminderTime = form.elements['reminderTime'].value;
 
+        const formData = {
+            title: document.getElementById('habitTitle').value,
+            description: document.getElementById('habitDescription').value,
+            frequency: document.getElementById('habitFrequency').value,
+            reminder: document.getElementById('habitReminder').value,
+            category: document.getElementById('habitCategory').value,
+            startDate: document.getElementById('habitStartDate').value
+        };
+
+        const habitId = document.getElementById('habitForm').dataset.habitId;
+        
         if (habitId) {
-            const habit = this.habits.find(h => h.id === habitId);
-            habit.name = name;
-            habit.description = description;
-            habit.category = category;
-            habit.frequency = frequency;
-            habit.reminderTime = reminderTime;
+            // Update existing habit
+            this.updateHabit(habitId, formData);
         } else {
-            const newHabit = new Habit(Date.now().toString(), name, description, category, frequency, reminderTime);
-            this.habits.push(newHabit);
+            // Create new habit
+            this.createHabit(formData);
         }
 
-        this.saveHabits();
-        this.renderHabits();
         this.closeHabitModal();
+        this.renderHabits();
     }
 
-    // Render habits
-    renderHabits() {
-        const habitList = document.getElementById('habitList');
-        habitList.innerHTML = '';
+    // Create new habit
+    createHabit(formData) {
+        const newHabit = new Habit(
+            Date.now().toString(),
+            formData.title,
+            formData.description,
+            formData.frequency,
+            formData.reminder,
+            formData.category,
+            formData.startDate
+        );
 
-        this.habits.forEach(habit => {
-            const habitItem = document.createElement('div');
-            habitItem.className = 'habit-item';
-            habitItem.innerHTML = `
-                <h3>${habit.name}</h3>
-                <p>${habit.description}</p>
-                <p>Category: ${habit.category}</p>
-                <p>Frequency: ${habit.frequency}</p>
-                <p>Reminder Time: ${habit.reminderTime}</p>
-                <button onclick="habitBuilder.editHabit('${habit.id}')">Edit</button>
-                <button onclick="habitBuilder.deleteHabit('${habit.id}')">Delete</button>
-            `;
-            habitList.appendChild(habitItem);
-        });
+        this.habits.push(newHabit);
+        this.saveHabits();
+        this.showNotification('Habit created successfully!');
     }
 
-    // Edit habit
-    editHabit(habitId) {
-        this.openHabitModal(habitId);
+    // Update existing habit
+    updateHabit(habitId, formData) {
+        const index = this.habits.findIndex(h => h.id === habitId);
+        if (index !== -1) {
+            this.habits[index] = {
+                ...this.habits[index],
+                ...formData
+            };
+            this.saveHabits();
+            this.showNotification('Habit updated successfully!');
+        }
     }
 
     // Delete habit
     deleteHabit(habitId) {
-        this.habits = this.habits.filter(h => h.id !== habitId);
-        this.saveHabits();
-        this.renderHabits();
+        if (confirm('Are you sure you want to delete this habit?')) {
+            this.habits = this.habits.filter(h => h.id !== habitId);
+            this.saveHabits();
+            this.renderHabits();
+            this.showNotification('Habit deleted successfully!');
+        }
     }
 
-    // Filter habits
+    // Mark habit as complete for today
+    markHabitComplete(habitId) {
+        const habit = this.habits.find(h => h.id === habitId);
+        if (habit) {
+            const today = new Date().toISOString().split('T')[0];
+            
+            if (!habit.completionHistory.includes(today)) {
+                habit.completionHistory.push(today);
+                this.updateStreak(habit);
+                this.saveHabits();
+                this.renderHabits();
+                this.showNotification('Habit marked as complete!');
+            }
+        }
+    }
+
+    // Update habit streak
+    updateStreak(habit) {
+        const today = new Date();
+        const sortedHistory = habit.completionHistory.sort();
+        let streak = 0;
+        
+        // Calculate streak based on frequency
+        switch(habit.frequency) {
+            case 'daily':
+                for (let i = sortedHistory.length - 1; i >= 0; i--) {
+                    const date = new Date(sortedHistory[i]);
+                    const diffDays = Math.floor((today - date) / (1000 * 60 * 60 * 24));
+                    
+                    if (diffDays <= 1) {
+                        streak++;
+                    } else {
+                        break;
+                    }
+                }
+                break;
+                
+            case 'weekly':
+                // Implementation for weekly streaks
+                break;
+                
+            case 'monthly':
+                // Implementation for monthly streaks
+                break;
+        }
+        
+        habit.streak = streak;
+    }
+
+    // Populate form with habit data
+    populateHabitForm(habit) {
+        const form = document.getElementById('habitForm');
+        form.dataset.habitId = habit.id;
+        
+        document.getElementById('habitTitle').value = habit.title;
+        document.getElementById('habitDescription').value = habit.description;
+        document.getElementById('habitFrequency').value = habit.frequency;
+        document.getElementById('habitReminder').value = habit.reminder;
+        document.getElementById('habitCategory').value = habit.category;
+        document.getElementById('habitStartDate').value = habit.startDate;
+    }
+
+    // Filter habits based on current filter settings
     filterHabits() {
         const statusFilter = document.getElementById('statusFilter').value;
         const categoryFilter = document.getElementById('categoryFilter').value;
@@ -153,34 +217,79 @@ class HabitBuilder {
         const filteredHabits = this.habits.filter(habit => {
             const matchesStatus = statusFilter === 'all' || habit.status === statusFilter;
             const matchesCategory = categoryFilter === 'all' || habit.category === categoryFilter;
-            const matchesSearch = habit.name.toLowerCase().includes(searchQuery) || habit.description.toLowerCase().includes(searchQuery);
+            const matchesSearch = habit.title.toLowerCase().includes(searchQuery) ||
+                                habit.description.toLowerCase().includes(searchQuery);
+
             return matchesStatus && matchesCategory && matchesSearch;
         });
 
-        this.renderFilteredHabits(filteredHabits);
+        this.renderHabits(filteredHabits);
     }
 
-    // Render filtered habits
-    renderFilteredHabits(habits) {
-        const habitList = document.getElementById('habitList');
-        habitList.innerHTML = '';
+    // Render habits to the page
+    renderHabits(habitsToRender = this.habits) {
+        const container = document.getElementById('activeHabits');
+        container.innerHTML = '';
 
-        habits.forEach(habit => {
-            const habitItem = document.createElement('div');
-            habitItem.className = 'habit-item';
-            habitItem.innerHTML = `
-                <h3>${habit.name}</h3>
-                <p>${habit.description}</p>
-                <p>Category: ${habit.category}</p>
-                <p>Frequency: ${habit.frequency}</p>
-                <p>Reminder Time: ${habit.reminderTime}</p>
-                <button onclick="habitBuilder.editHabit('${habit.id}')">Edit</button>
-                <button onclick="habitBuilder.deleteHabit('${habit.id}')">Delete</button>
-            `;
-            habitList.appendChild(habitItem);
+        habitsToRender.forEach(habit => {
+            const habitElement = this.createHabitElement(habit);
+            container.appendChild(habitElement);
         });
+    }
+
+    // Create habit element
+    createHabitElement(habit) {
+        const today = new Date().toISOString().split('T')[0];
+        const isCompletedToday = habit.completionHistory.includes(today);
+        
+        const habitDiv = document.createElement('div');
+        habitDiv.className = 'habit-card';
+        habitDiv.innerHTML = `
+            <h3>${habit.title}</h3>
+            <div class="habit-meta">
+                <span class="category">${habit.category}</span>
+                <span class="frequency">${habit.frequency}</span>
+            </div>
+            <p>${habit.description}</p>
+            <div class="habit-stats">
+                <span class="streak">Current Streak: ${habit.streak} ${habit.frequency}</span>
+                <span class="total">Total Completions: ${habit.completionHistory.length}</span>
+            </div>
+            <div class="habit-actions">
+                <button onclick="habitTracker.markHabitComplete('${habit.id}')" 
+                        class="primary-btn" 
+                        ${isCompletedToday ? 'disabled' : ''}>
+                    ${isCompletedToday ? 'Completed Today' : 'Mark Complete'}
+                </button>
+                <button onclick="habitTracker.openHabitModal('${habit.id}')" class="secondary-btn">Edit</button>
+                <button onclick="habitTracker.deleteHabit('${habit.id}')" class="secondary-btn">Delete</button>
+            </div>
+        `;
+
+        return habitDiv;
+    }
+
+    // Show notification
+    showNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
     }
 }
 
-// Initialize HabitBuilder
-const habitBuilder = new HabitBuilder();
+// Initialize habit tracker
+const habitTracker = new HabitTracker();
+
+// Handle window click to close modal
+window.onclick = function(event) {
+    const modal = document.getElementById('habitModal');
+    if (event.target === modal) {
+        habitTracker.closeHabitModal();
+    }
+};
