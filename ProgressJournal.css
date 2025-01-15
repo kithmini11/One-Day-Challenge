@@ -6,7 +6,7 @@
 }
 
 body {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, #bccee9 0%, #c3cfe2 100%);
     color: #2c3e50;
     line-height: 1.6;
     padding-top: 60px;
@@ -53,19 +53,35 @@ body {
 .nav-links a:hover {
     color: #3498db;
 }
+
 .journal-card {
     background: white;
-    padding: 1.5rem;
+    padding: 20px;
     border-radius: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    margin-left:40px;
+    margin-right:40px;
+    margin-top:40px;
+    width:95%;
+}
+
+h2{
+    text-align: left;
     margin-bottom: 1rem;
+    color:#1f076e;
+    font-size:40px;
 }
 
 .journal-entry {
     background: #f8f9fa;
-    padding: 1rem;
+    padding: 20px;
     border-radius: 10px;
-    margin-bottom: 1rem;
+    margin-bottom: 20px;
+    margin-left:40px;
+    margin-right:40px;
+    margin-top:40px;
+    width:95%;
 }
 
 .entry-header {
