@@ -12,3 +12,5 @@
 <p>Cross-Feature Integration: All components work together to provide comprehensive progress insights</p>
 
 
+![Screenshot 2025-01-15 100540](https://github.com/user-attachments/assets/53918a22-5c04-4b74-9187-248638540d76)
+
